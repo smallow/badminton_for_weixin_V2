@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/res/style/weui.min.css"/>
+    <link rel="stylesheet" href="/res/style/smallow.css"/>
+    <script type="text/javascript" src="/res/js/zepto.min.js"></script>
+    <script type="text/javascript" src="/res/js/weui.min.js"></script>
+    <title>会员注册</title>
+</head>
+<body>
+<div class="container">
+    <div class="page input js_show">
+        <div class="page__hd">
+            <h1 class="page__title">会员注册</h1>
+            <p class="page__desc"></p>
+        </div>
+        <div class="page__bd">
+            <div class="weui-cells weui-cells_form" id="form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" id="nicheng" required placeholder="昵称" emptyTips="请输入昵称">
+                    </div>
+                    <div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>
+                </div>
+                <div class="weui-cell weui-cell weui-cell_vcode">
+                    <div class="weui-cell__hd"><label class="weui-label">验证码</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" required maxlength="4" id="captcha_code"  type="text" placeholder="点击图片更换验证码">
+                    </div>
+                    <div class="weui-cell__ft"><i class="weui-icon-warn"></i><img id="captcha" class="weui-vcode-img"
+                                                                                  src="" onclick="getCaptcha()"></div>
+                </div>
+                <!--<div class="weui-cell weui-cell_vcode">-->
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">手机号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="tel" id="phone" required="" pattern="^\d{11}$" maxlength="11" placeholder="输入手机号" emptytips="请输入手机号" notmatchtips="请输入正确的手机号">
+                    </div>
+                    <div class="weui-cell__ft">
+                        <!--<button class="weui-vcode-btn">获取验证码</button>-->
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">邀请码</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" id="invitation_code" required placeholder="邀请码" emptyTips="请输入该手机号对应的邀请码">
+                    </div>
+                    <div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>
+                </div>
+
+            </div>
+            <div class="weui-btn-area"><a id="formSubmitBtn" href="javascript:" onclick="submitData()"
+                                          class="weui-btn weui-btn_primary">提交</a></div>
+        </div>
+
+    </div>
+</div>
+<script>
+    var groupId='{{.D.groupId}}';
+    $(function () {
+        getCaptcha();
+        weui.form.checkIfBlur('#form');
+    });
+    function getCaptcha() {
+        $("#captcha").attr('src', "/captcha?rand=" + Math.random());
+    }
+
+    function submitData() {
+        weui.form.validate('#form', function (error) {
+            if (!error) {
+                var loading = weui.loading('提交中...');
+//                setTimeout(function () {
+//                    loading.hide();
+//                    weui.toast('提交成功', 3000);
+//                }, 1500);
+                var nicheng=$("#nicheng").val();
+                var captcha_code=$("#captcha_code").val();
+                var phone=$("#phone").val();
+                var invitation_code=$("#invitation_code").val();
+                $.post("/memberRegisterSubmit",{groupId:groupId,name:nicheng,captcha_code:captcha_code,phone:phone,invitation_code:invitation_code},function (msg) {
+                    loading.hide();
+                    if(msg.msg=="success"){
+                        weui.toast('注册成功', 2000);
+
+                        setTimeout(function () {
+                            window.location.href="/groupAty?groupId="+groupId;
+                        },2000);
+                    }else if(msg.msg=="invitation_code_error"){
+                        weui.alert('注册未成功,邀请码输入有误', { title: '提示' });
+                    }else if(msg.msg=="captcha_code_error"){
+                        weui.alert('注册未成功,验证码输入有误', { title: '提示' });
+                        getCaptcha();
+                    }else {
+                        weui.alert('注册未成功,请稍后重试', { title: '提示' });
+                    }
+                });
+
+            }
+        });
+    }
+</script>
+</body>
+</html>

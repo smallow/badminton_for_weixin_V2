@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/res/style/weui.min.css"/>
+    <link rel="stylesheet" href="/res/style/smallow.css"/>
+    <script type="text/javascript" src="/res/js/zepto.min.js"></script>
+    <script type="text/javascript" src="/res/js/weui.min.js"></script>
+    <title>会员信息</title>
+    <style type="text/css">.weui_avatar{width:52px;height:52px;border-radius:4px;vertical-align:middle}</style>
+</head>
+<body>
+<script>
+    var member={{.D.member}};
+    var userInfo={{.D.userInfo}};
+    $(function () {
+        if(userInfo!=""){
+            $("#headImg").attr("src",userInfo.headimgurl);
+        }
+        if(member!=""){
+            $("#member_name").html(member.name);
+            $("#member_group").html(member.group_name);
+            $("#member_money").html(member.money);
+
+        }
+    });
+</script>
+<div class="container">
+    <div class="page input js_show">
+        <div class="page__hd">
+            <!--<h1 class="page__title">会员信息</h1>-->
+            <!--<p class="page__desc"></p>-->
+            <div class="weui-flex">
+                <div class="weui-flex__item"><h1 class="page__title">会员信息</h1></div>
+                <div><img class="weui_avatar" src="" id="headImg" /></div>
+            </div>
+        </div>
+        <div class="page__bd">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>昵称</p>
+                    </div>
+                    <div class="weui-cell__ft" id="member_name">
+
+                    </div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>所属群</p>
+                    </div>
+                    <div class="weui-cell__ft" id="member_group"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>余额</p>
+                    </div>
+                    <div class="weui-cell__ft" id="member_money"></div>
+                </div>
+            </div>
+            <div class="weui-cells">
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="myAty();">
+                    <div class="weui-cell__bd">
+                        <p>我的活动</p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="myPayment();">
+                    <div class="weui-cell__bd">
+                        <p>我的缴费</p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function myAty() {
+        if(member!=""){
+            window.location.href="/toMyAty?memberId="+member.id;
+        }
+    }
+    function myPayment() {
+        if(member!=""){
+            window.location.href="/toMyPayment?memberId="+member.id;
+        }
+    }
+</script>
+</body>
+</html>

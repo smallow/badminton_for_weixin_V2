@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/res/style/weui.min.css"/>
+    <link rel="stylesheet" href="/res/style/smallow.css"/>
+    <script type="text/javascript" src="/res/js/zepto.min.js"></script>
+    <script type="text/javascript" src="/res/js/weui.min.js"></script>
+    <title>活动详情</title>
+</head>
+<body>
+<div class="container">
+    <div class="page input js_show">
+        <div class="page__hd">
+            <div class="weui-flex">
+                <div class="weui-flex__item"><h1 class="page__title">活动信息</h1></div>
+            </div>
+        </div>
+        <div class="page__bd">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>活动时间</p>
+                    </div>
+                    <div class="weui-cell__ft" id="aty_date">
+                    </div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>地点</p>
+                    </div>
+                    <div class="weui-cell__ft" id="aty_address"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>群</p>
+                    </div>
+                    <div class="weui-cell__ft" id="group_name"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>报名人数</p>
+                    </div>
+                    <div class="weui-cell__ft" id="total_person"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>场地数</p>
+                    </div>
+                    <div class="weui-cell__ft" id="site_num"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>用球数</p>
+                    </div>
+                    <div class="weui-cell__ft" id="badminton_num"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>时间数</p>
+                    </div>
+                    <div class="weui-cell__ft" id="time_num"></div>
+                </div>
+            </div>
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>总消费</p>
+                    </div>
+                    <div class="weui-cell__ft" id="total_cost"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>人均消费</p>
+                    </div>
+                    <div class="weui-cell__ft" id="avg_cost"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>带朋友数</p>
+                    </div>
+                    <div class="weui-cell__ft" id="friend_num"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>个人消费</p>
+                    </div>
+                    <div class="weui-cell__ft" id="money"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>余额</p>
+                    </div>
+                    <div class="weui-cell__ft" id="current_day_left_money"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var loading=weui.loading('正在加载中...');
+        var recordId='{{.D.recordId}}';
+        if(recordId!=""){
+            $.post("/getMyAtyDetail",{recordId:recordId},function (data) {
+                loading.hide();
+                if(data){
+                    $("#aty_date").html(data.date);
+                    $("#aty_address").html(data.address);
+                    $("#group_name").html(data.groupName);
+                    $("#total_person").html(data.totalPerson);
+                    $("#site_num").html(data.siteNum);
+                    $("#badminton_num").html(data.badmintonNum);
+                    $("#time_num").html(data.timeNum);
+                    $("#total_cost").html(data.totalCost+" 元");
+                    $("#avg_cost").html(data.avgCost+" 元");
+                    $("#friend_num").html(data.friendNum);
+                    $("#money").html(data.money+" 元");
+                    $("#current_day_left_money").html(data.currentDayLeftMoney+" 元");
+                }
+            },'json');
+        }
+    });
+</script>
+</body>
+</html>

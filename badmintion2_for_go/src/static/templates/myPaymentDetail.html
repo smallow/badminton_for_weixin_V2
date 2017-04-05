@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/res/style/weui.min.css"/>
+    <link rel="stylesheet" href="/res/style/smallow.css"/>
+    <script type="text/javascript" src="/res/js/zepto.min.js"></script>
+    <script type="text/javascript" src="/res/js/weui.min.js"></script>
+    <title>缴费详情</title>
+</head>
+<body>
+<div class="container">
+    <div class="page input js_show">
+        <div class="page__hd">
+            <div class="weui-flex">
+                <div class="weui-flex__item"><h1 class="page__title">缴费信息</h1></div>
+            </div>
+        </div>
+        <div class="page__bd">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>缴费人</p>
+                    </div>
+                    <div class="weui-cell__ft" id="pay_name">
+                    </div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>缴费金额</p>
+                    </div>
+                    <div class="weui-cell__ft" id="pay_money"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>余额</p>
+                    </div>
+                    <div class="weui-cell__ft" id="money"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>群</p>
+                    </div>
+                    <div class="weui-cell__ft" id="group_name"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>缴费时间</p>
+                    </div>
+                    <div class="weui-cell__ft" id="pay_time"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>转账单号</p>
+                    </div>
+                    <div class="weui-cell__ft" id="bill_number"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>缴费类型</p>
+                    </div>
+                    <div class="weui-cell__ft" id="pay_type"></div>
+                </div>
+
+            </div>
+            <div class="weui-cells">
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>收款人</p>
+                    </div>
+                    <div class="weui-cell__ft" id="payee_name"></div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>收款账号</p>
+                    </div>
+                    <div class="weui-cell__ft" id="payee_account"></div>
+                </div>
+                <div class="weui-cell" >
+                    <div class="weui-cell__bd">
+                        <p>备注</p>
+                    </div>
+                    <div class="weui-cell__ft" id="memo"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var loading=weui.loading('正在加载中...');
+        var recordId='{{.D.recordId}}';
+        if(recordId!=""){
+            $.post("/getMyPaymentDetail",{recordId:recordId},function (data) {
+                loading.hide();
+                if(data){
+                    $("#pay_name").html(data.name);
+                    $("#pay_money").html(data.payMoney);
+                    $("#money").html(data.money);
+                    $("#group_name").html(data.groupName);
+                    $("#pay_time").html(data.payTime);
+                    $("#bill_number").html(data.billNumber);
+                    $("#pay_type").html(data.payType);
+                    $("#payee_name").html(data.payeeName);
+                    $("#payee_account").html(data.payeeAccount);
+                    $("#memo").html(data.memo);
+                }
+            },'json');
+        }
+    });
+</script>
+</body>
+</html>

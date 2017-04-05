@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/res/style/weui.min.css"/>
+    <link rel="stylesheet" href="/res/style/smallow.css"/>
+    <script type="text/javascript" src="/res/js/zepto.min.js"></script>
+    <script type="text/javascript" src="/res/js/weui.min.js"></script>
+    <title></title>
+    <style type="text/css">.weui_avatar{width:52px;height:52px;border-radius:4px;vertical-align:middle}</style>
+</head>
+<body>
+<div class="container">
+    <div class="page list js_show">
+        <div class="page__hd">
+            <!--<div class="page__title">今日活动</div>-->
+            <!--<div class="page__desc">2017-02-25  周六</div>-->
+            <!--<div class="weui-cell__ft">-->
+                <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">正在报名</a>-->
+            <!--</div>-->
+            <div class="weui-flex">
+                <div class="weui-flex__item"><span style="font-size: 20px;font-weight: 600;">今日活动</span><br><span style="color:#999;">{{.D.aty.Date}}&nbsp;&nbsp;{{.D.group.Name}}</span></div>
+                <div ><a href="javascript:;" onclick="getUserInfo()"><img class="weui_avatar" src="{{.D.headImgUrl}}" alt=""></a><a id="sf_baoming" href="javascript:;" onclick="baoming()" class="weui-btn weui-btn_mini  weui-btn_primary" style="vertical-align: middle;margin-left: 5px;">我要报名</a></div>
+            </div>
+
+        </div>
+        <div class="page__bd">
+            <div class="weui-cells__title">活动信息<span style="float: right;"><a href="#">往期活动..>></a></span></div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">活动地点:</label></div>
+                    <div class="weui-cell__bd">
+                        {{.D.aty.Address}}
+                    </div>
+
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">活动时间:</label></div>
+                    <div class="weui-cell__bd">
+                        {{.D.aty.StartTime}} -- {{.D.aty.EndTime}}
+                    </div>
+
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">场地数:</label></div>
+                    <div class="weui-cell__bd">
+                        {{.D.aty.SiteNum}}
+                    </div>
+
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">联系人:</label></div>
+                    <div class="weui-cell__bd">
+                        {{.D.aty.ChargeMemberName}} ({{.D.aty.ChargeMemberPhone}})
+                    </div>
+
+                </div>
+            </div>
+            <div class="weui-cells__title">报名信息:<span id="sign_up_num"></span>人</div>
+            <div class="weui-grids" id="signUpList">
+
+            </div>
+        </div>
+        <div class="page__ft">
+
+        </div>
+    </div>
+</div>
+
+{{template "common.html" .}}
+<script type="text/javascript">
+    var groupId='{{.D.groupid}}';
+    var atyId='{{.D.aty.Id}}';
+    var signUpList={{.D.signUpList}};
+    var recordId='{{.D.recordId}}';
+    var member={{.D.member}};
+    $(function () {
+        $("#sign_up_num").html(signUpList.length);
+        $.each(signUpList,function (index, map) {
+            //alert(map.openid+" "+map.memberId+" "+map.name)
+            var str=$("<a href='javascript:;' class='weui-grid five-column'><div class='weui-grid__icon'><img src=''></div><p class='weui-grid__label'>"+map.name+"</p></a>");
+            $("#signUpList").append(str);
+        });
+        if(recordId!=""){
+            changeStyle(true);
+        }
+    });
+
+    function changeStyle(sign) {
+        $("#sf_baoming").html("取消报名");
+        $("#sf_baoming").attr("class", "weui-btn weui-btn_mini weui-btn_warn");
+        $("#sf_baoming").removeAttr("onclick");
+        setTimeout(function () {
+            $("#sf_baoming").attr("onclick","quxiao();");
+        },sign==true?10:20000);
+    }
+
+    function changeStyle2(sign) {
+        $("#sf_baoming").html("我要报名");
+        $("#sf_baoming").attr("class", "weui-btn weui-btn_mini weui-btn_primary");
+        $("#sf_baoming").removeAttr("onclick");
+        setTimeout(function () {
+            $("#sf_baoming").attr("onclick","baoming();");
+        },sign==true?10:20000);
+    }
+
+    function quxiao() {
+        if (recordId!="" && atyId!=""){
+            var loading = weui.loading('正在取消...');
+            $.post("/cancelSignUp",{recordId:recordId,atyId:atyId},function (msg) {
+                loading.hide();
+                if(msg.msg=="success"){
+                    weui.toast('取消成功', 2000);
+                    changeStyle2(false);
+                }else if(msg.msg="aty_already_started"){
+                    weui.alert("活动已经开始不能取消,您的费用将被扣除");
+                }else if(msg.msg="aty_already_finished"){
+                    weui.alert("活动已经结束不能取消,您的费用将被扣除");
+                }
+            })
+        }
+    }
+    function baoming() {
+        if(atyId=="" || atyId==null ){
+            weui.alert("今日活动尚未发布,不能报名");
+            return false;
+        }
+        var loading = weui.loading('正在处理...');
+        $.post("/signUp",{groupId:groupId,atyId:atyId},function (data) {
+            loading.hide();
+            if(data.err_msg){
+                weui.confirm('您尚未注册本群会员,不能报名', {
+                    title: '提示',
+                    buttons: [{
+                        label: '我再看看',
+                        type: 'default',
+                        onClick: function(){ console.log('no') }
+                    }, {
+                        label: '去注册',
+                        type: 'primary',
+                        onClick: function(){
+                            window.location.href="/memberRegister?groupId="+groupId;
+                        }
+                    }]
+                });
+            }else if (data.msg=="success"){
+                weui.toast('报名成功', 2000);
+                recordId=data.recordId;
+                changeStyle(false);
+                //window.location.reload();
+            }else if (data.msg=="fail"){
+                weui.toast('报名未成功,请稍后重试', 2000);
+            }
+        },'json');
+    }
+    
+    function getUserInfo() {
+       window.location.href="/toUserInfo";
+    }
+</script>
+</body>
+</html>

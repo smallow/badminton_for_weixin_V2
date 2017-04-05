@@ -1,0 +1,14 @@
+{
+  "listenaddr": ":8080",
+  "wxprefix": "/weixin",
+  "wxtoken": "smallow521",
+  "wxappid": "wx046dc37216ababdb",
+  "wxsecert": "d233413f231c1290e0b52240f8d01d85",
+  "wxssourl": "http://smallow.top/wx/sso",
+  "ishttps": false,
+  "pemfile": "",
+  "keyfile": "",
+  "file_server":"",
+  "db_info": "root:zxy19860122@tcp(127.0.0.1:3306)/smallow_badminton_2?charset=utf8",
+  "recommend_group":"1"
+}

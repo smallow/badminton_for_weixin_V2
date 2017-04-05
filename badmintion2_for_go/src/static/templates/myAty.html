@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/res/style/weui.min.css"/>
+    <link rel="stylesheet" href="/res/style/smallow.css"/>
+    <script type="text/javascript" src="/res/js/zepto.min.js"></script>
+    <script type="text/javascript" src="/res/js/weui.min.js"></script>
+    <title>我参加的活动记录</title>
+</head>
+<body>
+<div class="container">
+    <div class="page list js_show">
+        <div class="page__hd">
+            <h1 class="page__title">我参加的活动</h1>
+        </div>
+        <div class="page__bd">
+            <div class="weui-cells" id="list_data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var loading = weui.loading('正在加载中...');
+        $.post("/getMyAty",{},function (data) {
+            loading.hide();
+            if(data.msg=="success"){
+                var list=data.list;
+                $.each(list,function (index, obj) {
+                   var str=$("<a class='weui-cell weui-cell_access' href='javascript:;' onclick=\"goMyAtyDetail('"+obj.recordId+"')\"><div class='weui-cell__bd'><div class='weui-flex__item'>"+obj.date+"</div><div class='weui-flex__item'>"+obj.address+"</div></div><div class='weui-cell__ft'>"+obj.groupName+"</div></a>");
+                   $("#list_data").append(str);
+
+                });
+            }else{
+                weui.alert("请先登录查询");
+                window.location.href="/groupAty";
+            }
+
+        });
+    });
+    
+    function goMyAtyDetail(recordId) {
+        if(recordId!=""){
+            window.location.href="/toMyAtyDetail?recordId="+recordId;
+        }
+
+
+    }
+</script>
+</body>
+</html>
